@@ -127,7 +127,7 @@ What is the R2 for the regression? Based on the R2, is `year` and `ice_off_doy` 
 
 **Answer 4:**
 
-The R2 for the regression is 0.02055. Based on the R2, 'year' and 'ice_off_doy' are not strongly related and the R2 shows that they
+The R2 for the regression is 0.02055. Based on the R2, 'year' and 'ice_off_doy' are not strongly related. The R2 shows that they
 have a weak relationship.
 
 ## Residuals normally distributed
@@ -162,8 +162,8 @@ Use the [`add_predictions()`](https://modelr.tidyverse.org/reference/add_predict
 ```{r}
 library(modelr)
 
-sunapee <- add_predictions(sunapee, fit)
-sunapee <- add_residuals(sunapee, fit)
+sunapee <- add_predictions(sunapee, fit, var = "pred")
+sunapee <- add_residuals(sunapee, fit, var = "resid")
 ```
 
 Now, to visualize the residuals, use `geom_histogram()` to plot them as a histogram. I recommend using a bin width of 10 in the histogram.
@@ -175,9 +175,13 @@ Show Histogram and answer the following question: do the residuals meet the assu
 **Answer 6:**
 
 ```{r}
-
+ggplot(sunapee, aes(x = resid)) +
+  geom_histogram(binwidth = 10) +
+  theme_classic() +
+  labs(title = "Lake Sunapee Residuals", x = "Residuals", y = "Count")
 ```
 
+I believe that the residuals histogram do not meet the assumptions of s of the linear regression, show a bias, and are not normally distributed even though the data is centered around 0. The distribution of the data is not even and seems to be biased towards the right side of the data too much. 
 
 ## The slope is different from zero
 
@@ -189,6 +193,8 @@ Based on the `summary()` above, what is the p-value for the slope?
 
 **Answer 7:**
 
+Based on the 'summary()' above, the p-value for the slope is 2.5e-09.
+
 ## The slope physically meaningful
 
 A slope value could have a low probability of being 0 (thus we have a strong belief that it is not zero), but the magnitude of change is functionally meaningless in the physical world (i.e., the rate of change is so small that we would not think much of it). This can occur particularly when analyzing large datasets.
@@ -199,6 +205,9 @@ Based on the slope value, how many more years are needed to pass before the lake
 
 **Answer 8:**
 
+Based on a slope value of -0.106, I believe that it would take about
+66 more years for Lake Sunapee ice-off to shift by a week. I believe that this rate of change is very small and proves to be meaningless since it would take a long time to notice the small difference. 
+
 ## Overall model assessment
 
 **Question 9:**
@@ -207,12 +216,23 @@ How comfortable are you proceeding with using this linear model for additional a
 
 **Answer 9:**
 
+I am not comfortable with proceeding with using this linear model for additional analysis and prediction. I believe that after residuals histogram does not meet the assumptions of the linear regression and it shows that there is a strong bias since the spread is abnormal. Something that was also observed was an R2 close to 0 meaning that there was a weak relationship between the variables that are being used. 
+
 **Question 10:**
 Now plot the data for Lake Sunapee (just like above - year on x-axis vs. ice of doy on y axis) but add the line from your regression results (e.g., fit intercept and slope). You will use the [`geom_abline`](https://ggplot2.tidyverse.org/reference/geom_abline.html). 
 
 **Answer 10:**
 ```{r}
-
+ggplot(sunapee, aes(x= year, y = ice_off_doy)) +
+  geom_point() +
+  geom_line() +
+  geom_abline(intercept = coef(fit)[1],
+  slope = coef(fit)[2], 
+  color = "red",
+  linewidth = 1
+  ) +
+  theme_classic() +
+  labs(title = "Lake Sunapee Ice-Off Dates", x = "Year", y = "Day of the Year")
 ```
 
 **Question 11:**
@@ -253,4 +273,9 @@ This module was initially developed as an Excel-based activity by Carey, C.C., J
 # Attribution
 
 Include citation of any AI-generated assistance or discussion with classmates (per policy in syllabus). Proper documentation of AI-generated assistance includes the prompt, the source (e.g., ChatGPT), and the significant parts of the response.  Proper documentation of discussion with classmates include listing their names and the components discussed.  
+
+ChatGPT was used for question 10 and the following prompt was asked
+'how do I use geom_abline if I have an intercept and slope'. The following sintax was provided by chat gpt 'geom_abline(intercept = <intercept_value>, slope = <slope_value>)' and is what was used to generate the graph for question 10. Afterwards the following prompt was asked, 'can I change the color and size of the line?' and chat gpt responded with 'Absolutely! With geom_abline(), you can easily change both the color and the thickness (size) of the line using the color and size arguments. You can also change the line type with linetype.'. This was then used to modify the line visibility to improve the graph with R giving me an error after using size argument and letting me know that it has been switched to linewidth.
+
+
 
