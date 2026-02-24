@@ -1,6 +1,6 @@
 ---
 title: "Lake Ice Phenology: Part 1"
-author: 'Gerardo Vargas Dominguez
+author: 'Gerardo Vargas Dominguez'
 format:
   html:
     embed-resources: true
@@ -282,8 +282,32 @@ Use the skills developed above to evaluate the question "Is the ice-off day of y
 Use a mix of code, figures, and text to present your analysis.  If you want to compare slopes, be sure they are on the same plot.
 
 ```{r}
+sunapee_lessthan <- filter(sunapee, year < 1970)
+fit_lessthan <- lm(ice_off_doy ~ year, data = sunapee_lessthan)
+fit_lessthan$coefficients[2]
 
+sunapee_greaterthan <- filter(sunapee, year >= 1970)
+fit_greaterthan <- lm(ice_off_doy ~ year, data = sunapee_greaterthan)
+fit_greaterthan$coefficients[2]
+
+ggplot(sunapee, aes(x= year, y = ice_off_doy)) +
+  geom_point() +
+  geom_line() +
+  geom_abline(intercept = coef(fit_greaterthan)[1],
+  slope = coef(fit_greaterthan)[2], 
+  color = "red",
+  linewidth = 1
+  ) +
+  geom_abline(intercept = coef(fit_lessthan)[1],
+  slope = coef(fit_lessthan)[2], 
+  color = "blue",
+  linewidth = 1
+  ) +
+  theme_classic() +
+  labs(title = "Lake Sunapee Ice-Off Trend Before and After 1970", subtitle = "Blue Line:Before 1970     Red Line:After 1970", x = "Year", y = "Day of the Year")
 ```
+
+The ice-off day of year has been changing quicker in recent years at Lake Sunapee. By splitting the Lake Sunapee data in two, data before 1970 and data after 1970, we can see that the slope shown in the data that is less than the year 1970 is less than the slope for the years greater than 1970. The slope found when analyzing the data before the year 1970 was -0.109668 while the slope after the year 1970 is -0.3023923. Just based on the slope we can see the difference in change rate has been increasing in the most recent years. To visualize this both of the slopes were placed on the graph created for question 1 to see the difference in steepness between the slopes. On the graph the blue line represent the slope for the data representing the years before 1970 and the red line represent the slope for the data representing the years after 1970. The graph shows the difference between the two slopes and may help understand the major difference in the rate of change between the two sets of data.
 
 # Rendering and committing
 
@@ -300,5 +324,22 @@ Include citation of any AI-generated assistance or discussion with classmates (p
 ChatGPT was used for question 10 and the following prompt was asked
 'how do I use geom_abline if I have an intercept and slope'. The following sintax was provided by chat gpt 'geom_abline(intercept = <intercept_value>, slope = <slope_value>)' and is what was used to generate the graph for question 10. Afterwards the following prompt was asked, 'can I change the color and size of the line?' and chat gpt responded with 'Absolutely! With geom_abline(), you can easily change both the color and the thickness (size) of the line using the color and size arguments. You can also change the line type with linetype.'. This was then used to modify the line visibility to improve the graph with R giving me an error after using size argument and letting me know that it has been switched to linewidth.
 
+ChatGPT was used on question 12 and was asked 'is there any way to add a subtitle in ggplot?'. ChatGPT answered library(ggplot2)
+# Example dataset
+df <- data.frame(
+  x = 1:10,
+  y = c(2, 3, 5, 4, 6, 7, 8, 9, 10, 12)
+)
 
-
+ggplot(df, aes(x = x, y = y)) +
+  geom_point(color = "darkgreen", size = 3) +
+  geom_line(color = "blue", size = 1) +
+  labs(
+    title = "Example of a Plot with labs()",
+    subtitle = "Shows points and a connecting line",
+    x = "Independent Variable (X)",
+    y = "Dependent Variable (Y)",
+    caption = "Source: Simulated data for demonstration",
+    tag = "Figure 1"
+  ) +
+  theme_minimal()
