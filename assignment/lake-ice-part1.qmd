@@ -247,8 +247,27 @@ The goal of this question is to make a forecast of the future ice-off day (with 
 **Answer 11:**
 
 ```{r}
+prediction_2040 <- coef(fit)[1] + coef(fit)[2] * 2040
+prediction_2040
+
+quantile(sunapee$resid, probs = c(0.05,0.95))
+
+lower_2040pred <- prediction_2040 + quantile(sunapee$resid, 0.05)
+higher_2040pred <- prediction_2040 + quantile(sunapee$resid, 0.95)
+lower_2040pred
+higher_2040pred
+
+confidence_interval_width <- higher_2040pred - lower_2040pred
+confidence_interval_width
 
 ```
+11.a: The ice-off day of the year 2040 is roughly expected to be on day 103 or day 102.6622.
+
+11.b the 95% and 5% confidence interval is 14.15137 and -19.42732.
+
+11.c: The 90% confidence interval is roughly between day 84 and day 117, or exactly on day 83.23486 and day 33.57868.
+
+11.d: The exact width of the confidence interval is 33.57868 days or about 34 days.
 
 # Is the ice-off day of the year changing more quickly in more recent years at Lake Sunapee?
 
@@ -261,6 +280,10 @@ Use the skills developed above to evaluate the question "Is the ice-off day of y
 **Answer 12:**
 
 Use a mix of code, figures, and text to present your analysis.  If you want to compare slopes, be sure they are on the same plot.
+
+```{r}
+
+```
 
 # Rendering and committing
 
